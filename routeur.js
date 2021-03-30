@@ -6,6 +6,8 @@ routeur.get('/', utilisateurController.accueil);
 
 routeur.post('/inscrire', utilisateurController.inscrire);
 
+routeur.post('/connecter', utilisateurController.connecter);
+
 module.exports = routeur;
 
 

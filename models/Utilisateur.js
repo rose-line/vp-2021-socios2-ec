@@ -8,21 +8,23 @@ let Utilisateur = function (donnees) {
 
 }
 
+
+
 Utilisateur.prototype.nettoyerEntrees = function () {
-  if (typeof (this.donnees.nomInscription) !== 'string') {
-    this.donnees.nomInscription = '';
+  if (typeof (this.donnees.nom) !== 'string') {
+    this.donnees.nom = '';
   }
-  if (typeof (this.donnees.emailInscription) !== 'string') {
-    this.donnees.emailInscription = '';
+  if (typeof (this.donnees.email) !== 'string') {
+    this.donnees.email = '';
   }
-  if (typeof (this.donnees.mdpInscription) !== 'string') {
-    this.donnees.mdpInscription = '';
+  if (typeof (this.donnees.mdp) !== 'string') {
+    this.donnees.mdp = '';
   }
 
   this.donnees = {
-    nom: this.donnees.nomInscription.trim().toLowerCase(),
-    email: this.donnees.emailInscription.trim().toLowerCase(),
-    mdp: this.donnees.mdpInscription
+    nom: this.donnees.nom.trim().toLowerCase(),
+    email: this.donnees.email.trim().toLowerCase(),
+    mdp: this.donnees.mdp
   }
 }
 
@@ -61,6 +63,61 @@ Utilisateur.prototype.validerEntrees = function () {
   }
 }
 
+//
+Utilisateur.prototype.connecter = async function () {
+  // Vérifier les credentials
+  this.nettoyerEntrees();
+
+  let utilisateurTrouve;
+
+  try {
+    utilisateurTrouve = await utilisateursColl.findOne({ nom: this.donnees.nom });
+  } catch {
+    throw "Une erreur s'est produite. Veuillez réessayer plus tard.";
+  }
+
+  if (!utilisateurTrouve || utilisateurTrouve.mdp !== this.donnees.mdp) {
+    throw 'Utilisateur ou mot de passe invalide';
+  }
+
+  // utilisateursColl.findOne({ nom: this.donnees.nom }, (err, utilisateurTrouve) => {
+  //   if (utilisateurTrouve) {
+  //     if (utilisateurTrouve.mdp === this.donnees.mdp) {
+  //       console.log('succes');
+  //     } else {
+  //       console.log('echec - mdp pas ok');
+  //     }
+  //   } else {
+  //     console.log('echec - nom pas ok');
+  //   }
+  // });
+}
+
+// Version avec callback
+// Utilisateur.prototype.connecter = function (callback) {
+//   this.nettoyerEntrees();
+//   utilisateursColl.findOne({ nom: this.donnees.nom }, (err, utilisateurTrouve) => {
+//     if (utilisateurTrouve && utilisateurTrouve.mdp === this.donnees.mdp) {
+//       callback('succes');
+//     } else {
+//       callback('echec');
+//     }
+//   });
+// }
+
+// Version avec promesses
+// Utilisateur.prototype.connecter = function () {
+//   return new Promise((resolve, reject) => {
+//     this.nettoyerEntrees();
+//     utilisateursColl.findOne({ nom: this.donnees.nom }, (err, utilisateurTrouve) => {
+//       if (utilisateurTrouve && utilisateurTrouve.mdp === this.donnees.mdp) {
+//         resolve('succes');
+//       } else {
+//         reject('Utilisateur ou mot de passe invalide');
+//       }
+//     });
+//   });
+// }
 
 Utilisateur.prototype.inscrire = function () {
   this.nettoyerEntrees();

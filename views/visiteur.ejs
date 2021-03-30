@@ -32,11 +32,11 @@
         <h4 class="my-0 mr-md-auto font-weight-normal">
           <a href="/" class="text-white">Socios</a>
         </h4>
-        <form class="mb-0 pt-2 pt-md-0">
+        <form action="/connecter" method="POST" class="mb-0 pt-2 pt-md-0">
           <div class="row align-items-center">
             <div class="col-md mr-0 pr-md-0 mb-3 mb-md-0">
               <input
-                name="nomConnexion"
+                name="nom"
                 class="form-control form-control-sm input-dark"
                 type="text"
                 placeholder="Nom"
@@ -45,7 +45,7 @@
             </div>
             <div class="col-md mr-0 pr-md-0 mb-3 mb-md-0">
               <input
-                name="mdpConnexion"
+                name="mdp"
                 class="form-control form-control-sm input-dark"
                 type="password"
                 placeholder="Mot de passe"
@@ -76,7 +76,7 @@
               >
               <input
                 id="nom-inscription"
-                name="nomInscription"
+                name="nom"
                 class="form-control"
                 type="text"
                 placeholder="Choisissez !"
@@ -90,7 +90,7 @@
               >
               <input
                 id="email-inscription"
-                name="emailInscription"
+                name="email"
                 class="form-control"
                 type="text"
                 placeholder="votre.email@exemple.fr"
@@ -103,7 +103,7 @@
                 ><small>Mot de passe</small></label
               >
               <input
-                name="mdpInscription"
+                name="mdp"
                 class="form-control"
                 type="password"
                 placeholder="Votre mot de passe suffisamment long"
