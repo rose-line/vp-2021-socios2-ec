@@ -6,6 +6,7 @@ exports.connecter = async function (req, res) {
 
   try {
     await utilisateur.connecter();
+    req.session.utilisateur = { nom: utilisateur.donnees.nom };
     res.send('connexion réussie');
   } catch (err) {
     console.log("log " + err);
@@ -48,5 +49,9 @@ exports.inscrire = function (req, res) {
 }
 
 exports.accueil = function (req, res) {
-  res.render('visiteur');
+  if (req.session.utilisateur) {
+    res.send('Bienvenue chez vous !');
+  } else {
+    res.render('visiteur');
+  }
 }

@@ -1,5 +1,6 @@
 const validator = require('validator');
-const utilisateursColl = require('../db').collection('utilisateurs');
+const utilisateursColl = require('../db').db().collection('utilisateurs');
+const bcrypt = require('bcryptjs');
 
 let Utilisateur = function (donnees) {
 
@@ -7,8 +8,6 @@ let Utilisateur = function (donnees) {
   this.erreurs = [];
 
 }
-
-
 
 Utilisateur.prototype.nettoyerEntrees = function () {
   if (typeof (this.donnees.nom) !== 'string') {
@@ -76,7 +75,7 @@ Utilisateur.prototype.connecter = async function () {
     throw "Une erreur s'est produite. Veuillez réessayer plus tard.";
   }
 
-  if (!utilisateurTrouve || utilisateurTrouve.mdp !== this.donnees.mdp) {
+  if (!utilisateurTrouve || !bcrypt.compareSync(this.donnees.mdp, utilisateurTrouve.mdp)) {
     throw 'Utilisateur ou mot de passe invalide';
   }
 
@@ -126,6 +125,8 @@ Utilisateur.prototype.inscrire = function () {
   // TODO: après validation, sauvegarder en DB
 
   if (this.erreurs.length === 0) {
+    const sel = bcrypt.genSaltSync(10);
+    this.donnees.mdp = bcrypt.hashSync(this.donnees.mdp, sel);
     utilisateursColl.insertOne(this.donnees);
   }
 }
