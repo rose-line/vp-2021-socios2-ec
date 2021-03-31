@@ -43,19 +43,19 @@ exports.inscrire = async function (req, res) {
 
   let utilisateur = new Utilisateur(req.body);
 
-  await utilisateur.inscrire();
-
-  if (utilisateur.erreurs.length === 0) {
-    res.send('dans inscrire()');
-  } else {
-    utilisateur.erreurs.forEach(erreur => {
+  try {
+    await utilisateur.inscrire();
+    // inscription réussie, je continue ici, plus rien à faire
+  } catch (erreurs) {
+    // échec d'inscription
+    erreurs.forEach(erreur => {
       req.flash('erreursInscription', erreur);
     });
-    req.session.save(() => {
-      res.redirect('/');
-    });
-    //res.send(utilisateur.erreurs);
   }
+
+  req.session.save(() => {
+    res.redirect('/');
+  });
 }
 
 exports.accueil = function (req, res) {

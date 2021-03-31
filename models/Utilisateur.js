@@ -55,6 +55,11 @@ Utilisateur.prototype.validerEntrees = async function () {
     }
   }
 
+  let existeDeja = await utilisateursColl.findOne({ email: this.donnees.email });
+  if (existeDeja) {
+    this.erreurs.push('Cet email est déjà utilisé');
+  }
+
   if (!this.donnees.mdp) {
     this.erreurs.push("Vous devez indiquer votre mot de passe");
   } else {
@@ -64,6 +69,10 @@ Utilisateur.prototype.validerEntrees = async function () {
     if (this.donnees.mdp.length > 50) {
       this.erreurs.push("Le mot de passe doit avoir au maximum 50 caractères");
     }
+  }
+
+  if (this.erreurs.length !== 0) {
+    throw this.erreurs;
   }
 }
 
@@ -126,14 +135,9 @@ Utilisateur.prototype.connecter = async function () {
 Utilisateur.prototype.inscrire = async function () {
   this.nettoyerEntrees();
   await this.validerEntrees();
-
-  // TODO: après validation, sauvegarder en DB
-
-  if (this.erreurs.length === 0) {
-    const sel = bcrypt.genSaltSync(10);
-    this.donnees.mdp = bcrypt.hashSync(this.donnees.mdp, sel);
-    utilisateursColl.insertOne(this.donnees);
-  }
+  const sel = await bcrypt.genSalt(10);
+  this.donnees.mdp = await bcrypt.hash(this.donnees.mdp, sel);
+  await utilisateursColl.insertOne(this.donnees);
 }
 
 module.exports = Utilisateur;
