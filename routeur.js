@@ -8,6 +8,8 @@ routeur.post('/inscrire', utilisateurController.inscrire);
 
 routeur.post('/connecter', utilisateurController.connecter);
 
+routeur.post('/deconnecter', utilisateurController.deconnecter);
+
 module.exports = routeur;
 
 

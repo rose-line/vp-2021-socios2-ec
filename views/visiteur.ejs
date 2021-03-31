@@ -60,6 +60,10 @@
     </header>
 
     <div class="container py-md-5">
+      <% erreursConnexion.forEach(erreur => { %>
+      <div class="alert alert-danger text-center"><%= erreur %></div>
+      <% }) %>
+
       <div class="row align-items-center">
         <div class="col-lg-7 py-3 py-md-5">
           <h1 class="display-3">Pourquoi Socios ?</h1>
@@ -70,6 +74,10 @@
         </div>
         <div class="col-lg-5 pl-lg-5 pb-3 py-lg-5">
           <form action="/inscrire" method="POST">
+            <% erreursInscription.forEach(erreur => { %>
+            <div class="alert alert-danger small"><%= erreur %></div>
+            <% }) %>
+
             <div class="form-group">
               <label for="nom-inscription" class="text-muted mb-1"
                 ><small>Nom d'utilisateur</small></label

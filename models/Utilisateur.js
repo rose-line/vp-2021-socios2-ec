@@ -27,7 +27,7 @@ Utilisateur.prototype.nettoyerEntrees = function () {
   }
 }
 
-Utilisateur.prototype.validerEntrees = function () {
+Utilisateur.prototype.validerEntrees = async function () {
   if (this.donnees.nom) {
     if (!validator.isAlphanumeric(this.donnees.nom)) {
       this.erreurs.push("Le nom ne doit pas inclure de caractères spéciaux");
@@ -37,6 +37,11 @@ Utilisateur.prototype.validerEntrees = function () {
     }
     if (this.donnees.nom.length > 30) {
       this.erreurs.push("Le nom doit avoir au maximum 30 caractères");
+    }
+    // Vérif que le nom n'existe pas déjà
+    let existeDeja = await utilisateursColl.findOne({ nom: this.donnees.nom });
+    if (existeDeja) {
+      this.erreurs.push("Ce nom d'utilisateur est déjà pris");
     }
   } else {
     this.erreurs.push("Vous devez indiquer votre nom d'utilisateur");
@@ -118,9 +123,9 @@ Utilisateur.prototype.connecter = async function () {
 //   });
 // }
 
-Utilisateur.prototype.inscrire = function () {
+Utilisateur.prototype.inscrire = async function () {
   this.nettoyerEntrees();
-  this.validerEntrees();
+  await this.validerEntrees();
 
   // TODO: après validation, sauvegarder en DB
 

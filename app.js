@@ -2,7 +2,11 @@ const express = require('express');
 const serveur = express();
 const routeur = require('./routeur.js');
 const session = require('express-session');
+
 const MongoStore = require('connect-mongo');
+
+const flash = require('connect-flash');
+const { Server } = require('mongodb');
 
 const sessionOptions = session({
   secret: "mon secret de session à ne pas communiquer",
@@ -10,11 +14,15 @@ const sessionOptions = session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24 * 7,  // 7 jours
+    maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true
   }
 });
 
+// Pour les messages "flash"
+serveur.use(flash());
+
+// Pour la gestion des sessions
 serveur.use(sessionOptions);
 
 // Pour récupérer les données issues d'un formulaire

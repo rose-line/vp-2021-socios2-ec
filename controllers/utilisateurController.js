@@ -1,17 +1,17 @@
 const Utilisateur = require('../models/Utilisateur');
 
 exports.connecter = async function (req, res) {
-  //console.log('connexion');
   let utilisateur = new Utilisateur(req.body);
 
   try {
     await utilisateur.connecter();
     req.session.utilisateur = { nom: utilisateur.donnees.nom };
-    res.send('connexion réussie');
   } catch (err) {
-    console.log("log " + err);
-    res.send(err);
+    req.flash('erreursConnexion', err);
   }
+  req.session.save(() => {
+    res.redirect('/');
+  });
 }
 
 // Avec callback
@@ -33,25 +33,41 @@ exports.connecter = async function (req, res) {
 //   });
 // }
 
-exports.deconnecter = function () { }
+exports.deconnecter = function (req, res) {
+  req.session.destroy(() => {
+    res.redirect('/');
+  });
+}
 
-exports.inscrire = function (req, res) {
+exports.inscrire = async function (req, res) {
 
   let utilisateur = new Utilisateur(req.body);
 
-  utilisateur.inscrire();
+  await utilisateur.inscrire();
 
-  if (utilisateur.erreurs.length !== 0) {
-    res.send(utilisateur.erreurs);
-  } else {
+  if (utilisateur.erreurs.length === 0) {
     res.send('dans inscrire()');
+  } else {
+    utilisateur.erreurs.forEach(erreur => {
+      req.flash('erreursInscription', erreur);
+    });
+    req.session.save(() => {
+      res.redirect('/');
+    });
+    //res.send(utilisateur.erreurs);
   }
 }
 
 exports.accueil = function (req, res) {
   if (req.session.utilisateur) {
-    res.send('Bienvenue chez vous !');
+    res.render('home', { nomUtilisateur: req.session.utilisateur.nom });
   } else {
-    res.render('visiteur');
+    res.render(
+      'visiteur',
+      {
+        erreursConnexion: req.flash('erreursConnexion'),
+        erreursInscription: req.flash('erreursInscription')
+      }
+    );
   }
 }
