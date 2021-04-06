@@ -25,6 +25,12 @@ serveur.use(flash());
 // Pour la gestion des sessions
 serveur.use(sessionOptions);
 
+// Pour injecter les données de session
+serveur.use((req, res, next) => {
+  res.locals.utilisateur = req.session.utilisateur;
+  next();
+});
+
 // Pour récupérer les données issues d'un formulaire
 serveur.use(express.urlencoded({ extended: false }));
 

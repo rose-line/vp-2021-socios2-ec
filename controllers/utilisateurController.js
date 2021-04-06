@@ -1,11 +1,24 @@
 const Utilisateur = require('../models/Utilisateur');
 
+exports.doitEtreConnecte = function (req, res, next) {
+  if (req.session.utilisateur) {
+    // Connecté : on peut passer à la fonction suivante
+    next();
+  } else {
+    // Pas connecté : redirection avec utilisation d'un message flash
+    req.flash('erreursConnexion', 'Vous ne pouvez pas effectuer cette action.');
+    req.session.save(() => {
+      res.redirect('/');
+    });
+  }
+}
+
 exports.connecter = async function (req, res) {
   let utilisateur = new Utilisateur(req.body);
 
   try {
     await utilisateur.connecter();
-    req.session.utilisateur = { nom: utilisateur.donnees.nom };
+    req.session.utilisateur = { nomUtilisateur: utilisateur.donnees.nom };
   } catch (err) {
     req.flash('erreursConnexion', err);
   }
@@ -45,6 +58,7 @@ exports.inscrire = async function (req, res) {
 
   try {
     await utilisateur.inscrire();
+    req.session.utilisateur = { nomUtilisateur: utilisateur.donnees.nom };
     // inscription réussie, je continue ici, plus rien à faire
   } catch (erreurs) {
     // échec d'inscription
@@ -60,7 +74,8 @@ exports.inscrire = async function (req, res) {
 
 exports.accueil = function (req, res) {
   if (req.session.utilisateur) {
-    res.render('home', { nomUtilisateur: req.session.utilisateur.nom });
+    console.log(req.session.utilisateur);
+    res.render('home');
   } else {
     res.render(
       'visiteur',

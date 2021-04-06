@@ -1,0 +1,36 @@
+<%- include('partials/header') %>
+
+<div class="container py-md-5 container--narrow">
+  <form action="creer_socios" method="POST">
+    <div class="form-group">
+      <label for="titre-socios" class="text-muted mb-1">
+        <small>Titre</small>
+      </label>
+      <input
+        required
+        id="titre-socios"
+        name="titre"
+        class="form-control form-control-lg form-control-title"
+        type="text"
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="contenu-socios" class="text-muted mb-1">
+        <small>Contenu</small>
+      </label>
+      <textarea
+        required
+        id="contenu-socios"
+        name="contenu"
+        class="body-content tall-textarea form-control"
+        type="text"
+      ></textarea>
+    </div>
+
+    <button class="btn btn-primary">Publier le socios</button>
+  </form>
+</div>
+
+<%- include('partials/footer') %>

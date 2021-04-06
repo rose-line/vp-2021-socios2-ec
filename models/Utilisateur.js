@@ -76,9 +76,7 @@ Utilisateur.prototype.validerEntrees = async function () {
   }
 }
 
-//
 Utilisateur.prototype.connecter = async function () {
-  // Vérifier les credentials
   this.nettoyerEntrees();
 
   let utilisateurTrouve;
