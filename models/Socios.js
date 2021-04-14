@@ -1,7 +1,9 @@
 const sociosColl = require('../db').db().collection('socios');
+const ObjectID = require('mongodb').ObjectID;
 
-const Socios = function (donnees) {
+const Socios = function (donnees, idUtilisateur) {
   this.donnees = donnees;
+  this.idUtilisateur = ObjectID(idUtilisateur);
   this.erreurs = [];
 }
 
@@ -14,6 +16,7 @@ Socios.prototype.nettoyerEntrees = function () {
   }
 
   this.donnees = {
+    auteur: this.idUtilisateur,
     titre: this.donnees.titre.trim(),
     contenu: this.donnees.contenu.trim(),
     dateCreation: new Date()
@@ -41,6 +44,51 @@ Socios.prototype.enregistrer = async function () {
     await sociosColl.insertOne(this.donnees);
   } catch {
     throw "Une erreur s'est produite. Veuillez réessayer plus tard.";
+  }
+}
+
+Socios.trouverSocios = async function (id) {
+  if (typeof (id) !== 'string' || !ObjectID.isValid(id)) {
+    throw 'ID invalide';
+  }
+
+  let sociosTrouve;
+  try {
+    //sociosTrouve = await sociosColl.findOne({ _id: new ObjectID(id) });
+
+    let sociosTrouves = await sociosColl.aggregate([
+      { $match: { _id: new ObjectID(id) } },
+      {
+        $lookup:
+        {
+          from: 'utilisateurs',
+          localField: 'auteur',
+          foreignField: '_id',
+          as: 'documentAuteur'
+        }
+      },
+      {
+        $project: {
+          titre: 1,
+          contenu: 1,
+          dateCreation: 1,
+          auteur: { $arrayElemAt: ['$documentAuteur', 0] }
+        }
+      }
+    ]).toArray();
+
+    sociosTrouve = sociosTrouves[0];
+
+  } catch {
+    throw "Une erreur s'est produite. Veuillez essayer plus tard.";
+  }
+
+  if (sociosTrouve) {
+    sociosTrouve.auteur = { nom: sociosTrouve.auteur.nom }
+    console.log('Socios trouvé : ', sociosTrouve);
+    return sociosTrouve;
+  } else {
+    throw 'ID introuvable';
   }
 }
 

@@ -18,7 +18,11 @@ exports.connecter = async function (req, res) {
 
   try {
     await utilisateur.connecter();
-    req.session.utilisateur = { nomUtilisateur: utilisateur.donnees.nom };
+    req.session.utilisateur =
+    {
+      id: utilisateur.donnees._id,
+      nom: utilisateur.donnees.nom
+    };
   } catch (err) {
     req.flash('erreursConnexion', err);
   }
@@ -26,25 +30,6 @@ exports.connecter = async function (req, res) {
     res.redirect('/');
   });
 }
-
-// Avec callback
-// exports.connecter = function (req, res) {
-//   const utilisateur = new Utilisateur(req.body);
-
-//   utilisateur.connecter(resultat => {
-//     res.send(resultat);
-//   });
-// }
-
-// Avec promesses
-// exports.connecter = function (req, res) {
-//   let utilisateur = new Utilisateur(req.body);
-//   utilisateur.connecter().then(resultat => {
-//     res.send(resultat);
-//   }).catch(err => {
-//     res.send(err);
-//   });
-// }
 
 exports.deconnecter = function (req, res) {
   req.session.destroy(() => {
@@ -58,7 +43,11 @@ exports.inscrire = async function (req, res) {
 
   try {
     await utilisateur.inscrire();
-    req.session.utilisateur = { nomUtilisateur: utilisateur.donnees.nom };
+    req.session.utilisateur =
+    {
+      id: utilisateur.donnees._id,
+      nom: utilisateur.donnees.nom
+    };
     // inscription réussie, je continue ici, plus rien à faire
   } catch (erreurs) {
     // échec d'inscription

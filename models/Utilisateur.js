@@ -91,44 +91,8 @@ Utilisateur.prototype.connecter = async function () {
     throw 'Utilisateur ou mot de passe invalide';
   }
 
-  // utilisateursColl.findOne({ nom: this.donnees.nom }, (err, utilisateurTrouve) => {
-  //   if (utilisateurTrouve) {
-  //     if (utilisateurTrouve.mdp === this.donnees.mdp) {
-  //       console.log('succes');
-  //     } else {
-  //       console.log('echec - mdp pas ok');
-  //     }
-  //   } else {
-  //     console.log('echec - nom pas ok');
-  //   }
-  // });
+  this.donnees = utilisateurTrouve;
 }
-
-// Version avec callback
-// Utilisateur.prototype.connecter = function (callback) {
-//   this.nettoyerEntrees();
-//   utilisateursColl.findOne({ nom: this.donnees.nom }, (err, utilisateurTrouve) => {
-//     if (utilisateurTrouve && utilisateurTrouve.mdp === this.donnees.mdp) {
-//       callback('succes');
-//     } else {
-//       callback('echec');
-//     }
-//   });
-// }
-
-// Version avec promesses
-// Utilisateur.prototype.connecter = function () {
-//   return new Promise((resolve, reject) => {
-//     this.nettoyerEntrees();
-//     utilisateursColl.findOne({ nom: this.donnees.nom }, (err, utilisateurTrouve) => {
-//       if (utilisateurTrouve && utilisateurTrouve.mdp === this.donnees.mdp) {
-//         resolve('succes');
-//       } else {
-//         reject('Utilisateur ou mot de passe invalide');
-//       }
-//     });
-//   });
-// }
 
 Utilisateur.prototype.inscrire = async function () {
   this.nettoyerEntrees();

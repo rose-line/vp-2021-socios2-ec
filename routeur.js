@@ -13,21 +13,8 @@ routeur.post('/deconnecter', utilisateurController.doitEtreConnecte, utilisateur
 
 routeur.get('/creer_socios', utilisateurController.doitEtreConnecte, sociosController.afficherVueCreation);
 
-routeur.post('/creer_socios', utilisateurController.doitEtreConnecte, sociosController.enregistrer)
+routeur.post('/creer_socios', utilisateurController.doitEtreConnecte, sociosController.enregistrer);
+
+routeur.get('/socios/:id', sociosController.afficherVueSocios);
 
 module.exports = routeur;
-
-
-// routeur.get('/contact', (req, res) => {
-//   res.send('Page de contact');
-// });
-
-
-// // ce qui est renvoyé à la fonction require
-// module.exports = {
-//   nom: 'Neymar',
-//   prenom: 'Jean',
-//   crier: function () {
-//     console.log("J'en ai marre !");
-//   }
-// }
