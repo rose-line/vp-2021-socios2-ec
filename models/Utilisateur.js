@@ -102,4 +102,30 @@ Utilisateur.prototype.inscrire = async function () {
   await utilisateursColl.insertOne(this.donnees);
 }
 
+Utilisateur.trouverUtilisateur = async function (nom) {
+  if (typeof (nom) !== 'string') {
+    throw 'Nom utilisateur invalide';
+  }
+
+  let utilisateurTrouve;
+  try {
+    utilisateurTrouve = await utilisateursColl.findOne({ nom: nom });
+  } catch {
+    throw "Une erreur s'est produite. Veuillez essayer plus tard.";
+  }
+
+  if (utilisateurTrouve) {
+    console.log('Utilisateur trouvé : ', utilisateurTrouve);
+
+    // Cleanup
+    utilisateurTrouve = {
+      _id: utilisateurTrouve._id,
+      nom: utilisateurTrouve.nom
+    };
+    return utilisateurTrouve;
+  } else {
+    throw 'Utilisateur introuvable';
+  }
+}
+
 module.exports = Utilisateur;

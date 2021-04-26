@@ -1,4 +1,5 @@
 const Utilisateur = require('../models/Utilisateur');
+const Socios = require('../models/Socios');
 
 exports.doitEtreConnecte = function (req, res, next) {
   if (req.session.utilisateur) {
@@ -6,10 +7,20 @@ exports.doitEtreConnecte = function (req, res, next) {
     next();
   } else {
     // Pas connecté : redirection avec utilisation d'un message flash
-    req.flash('erreursConnexion', 'Vous ne pouvez pas effectuer cette action.');
+    req.flash('erreurs', 'Vous ne pouvez pas effectuer cette action.');
     req.session.save(() => {
       res.redirect('/');
     });
+  }
+}
+
+exports.doitExister = async function (req, res, next) {
+  try {
+    const utilisateur = await Utilisateur.trouverUtilisateur(req.params.nom);
+    req.utilisateur = utilisateur;
+    next();
+  } catch (err) {
+    res.render('404');
   }
 }
 
@@ -24,7 +35,7 @@ exports.connecter = async function (req, res) {
       nom: utilisateur.donnees.nom
     };
   } catch (err) {
-    req.flash('erreursConnexion', err);
+    req.flash('erreurs', err);
   }
   req.session.save(() => {
     res.redirect('/');
@@ -61,6 +72,21 @@ exports.inscrire = async function (req, res) {
   });
 }
 
+exports.afficherProfil = async function (req, res) {
+  try {
+    const socios = await Socios.trouverLesSociosDe(req.utilisateur._id);
+    res.render(
+      'profil-socios',
+      {
+        auteur: req.utilisateur.nom,
+        lesSocios: socios
+      });
+  } catch (err) {
+    console.log('Une erreur est survenue lors de la récupération des socios : \n', err);
+    res.render('404');
+  }
+}
+
 exports.accueil = function (req, res) {
   if (req.session.utilisateur) {
     console.log(req.session.utilisateur);
@@ -69,7 +95,7 @@ exports.accueil = function (req, res) {
     res.render(
       'visiteur',
       {
-        erreursConnexion: req.flash('erreursConnexion'),
+        erreurs: req.flash('erreurs'),
         erreursInscription: req.flash('erreursInscription')
       }
     );

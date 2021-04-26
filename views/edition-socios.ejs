@@ -1,0 +1,50 @@
+<%- include('partials/header') %>
+
+<div class="container py-md-5 container--narrow">
+  <a class="small font-weight-bold" href="">
+    <i class="fas fa-arrow-alt-circle-left"></i> Retour au permalink
+  </a>
+
+  <div class="container py-md-5">
+    <% succes.forEach(msg => { %>
+    <div class="alert alert-success text-center"><%= msg %></div>
+    <% }) %>
+    <% erreurs.forEach(erreur => { %>
+    <div class="alert alert-danger text-center"><%= erreur %></div>
+    <% }) %>
+
+    <form class="mt-3" action="/socios/<%= socios._id %>/editer" method="POST">
+      <div class="form-group">
+        <label for="titre-socios" class="text-muted mb-1">
+          <small>Titre</small>
+        </label>
+        <input
+          id="titre-socios"
+          name="titre"
+          class="form-control form-control-lg form-control-title"
+          type="text"
+          value="<%= socios.titre %>"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="contenu-socios" class="text-muted mb-1">
+          <small>Contenu</small>
+        </label>
+        <textarea
+          id="contenu-socios"
+          name="contenu"
+          class="body-content tall-textarea form-control"
+          type="text"
+        >
+<%= socios.contenu %></textarea
+        >
+      </div>
+
+      <button class="btn btn-primary">Enregistrer</button>
+    </form>
+  </div>
+
+  <%- include('partials/footer') %>
+</div>

@@ -1,9 +1,10 @@
 const sociosColl = require('../db').db().collection('socios');
 const ObjectID = require('mongodb').ObjectID;
 
-const Socios = function (donnees, idUtilisateur) {
+const Socios = function (donnees, idUtilisateur, idSociosEdite) {
   this.donnees = donnees;
   this.idUtilisateur = ObjectID(idUtilisateur);
+  this.idSociosEdite = ObjectID(idSociosEdite);
   this.erreurs = [];
 }
 
@@ -47,6 +48,26 @@ Socios.prototype.enregistrer = async function () {
   }
 }
 
+Socios.prototype.mettreAJour = async function () {
+  this.nettoyerEntrees();
+  this.validerEntrees();
+
+  try {
+    await sociosColl.findOneAndUpdate(
+      { _id: this.idSociosEdite },
+      {
+        $set:
+        {
+          titre: this.donnees.titre,
+          contenu: this.donnees.contenu
+        }
+      }
+    );
+  } catch {
+    throw "Une erreur s'est produite. Veuillez réessayer plus tard.";
+  }
+}
+
 Socios.trouverSocios = async function (id) {
   if (typeof (id) !== 'string' || !ObjectID.isValid(id)) {
     throw 'ID invalide';
@@ -80,16 +101,39 @@ Socios.trouverSocios = async function (id) {
     sociosTrouve = sociosTrouves[0];
 
   } catch {
+    console.log('Erreur dans trouverSocios : \n', err);
     throw "Une erreur s'est produite. Veuillez essayer plus tard.";
   }
 
   if (sociosTrouve) {
-    sociosTrouve.auteur = { nom: sociosTrouve.auteur.nom }
+    sociosTrouve.auteur =
+    {
+      id: sociosTrouve.auteur._id.toString(),
+      nom: sociosTrouve.auteur.nom
+    }
     console.log('Socios trouvé : ', sociosTrouve);
     return sociosTrouve;
   } else {
     throw 'ID introuvable';
   }
+}
+
+Socios.trouverLesSociosDe = async function (idAuteur) {
+  if (!ObjectID.isValid(idAuteur)) {
+    throw 'ID invalide';
+  }
+
+  let sociosTrouves = [];
+
+  try {
+    sociosTrouves = await sociosColl.find({ auteur: idAuteur }).toArray();
+  } catch (err) {
+    console.log('Erreur dans trouverLesSociosDe : \n', err);
+    throw "Une erreur s'est produite. Veuillez essayer plus tard.";
+  }
+
+  console.log('Socios trouvés : \n', sociosTrouves);
+  return sociosTrouves;
 }
 
 module.exports = Socios;

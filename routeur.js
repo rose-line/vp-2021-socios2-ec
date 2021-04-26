@@ -15,6 +15,13 @@ routeur.get('/creer_socios', utilisateurController.doitEtreConnecte, sociosContr
 
 routeur.post('/creer_socios', utilisateurController.doitEtreConnecte, sociosController.enregistrer);
 
+routeur.get('/profil/:nom', utilisateurController.doitExister, utilisateurController.afficherProfil);
+
 routeur.get('/socios/:id', sociosController.afficherVueSocios);
+
+routeur.get('/socios/:id/editer', utilisateurController.doitEtreLAuteur, sociosController.afficherVueEdition);
+
+routeur.post('/socios/:id/editer', utilisateurController.doitEtreLAuteur, sociosController.mettreAJour);
+
 
 module.exports = routeur;

@@ -3,9 +3,12 @@
 <div class="container py-md-5 container--narrow">
   <div class="d-flex justify-content-between">
     <h2><%= socios.titre %></h2>
+
+    <% if (estAuteur) { %>
+
     <span class="pt-2">
       <a
-        href="#"
+        href="/socios/<%= socios._id %>/editer"
         class="mr-2 text-primary"
         data-toggle="tooltip"
         data-placement="top"
@@ -23,6 +26,8 @@
         </button>
       </form>
     </span>
+
+    <% } %>
   </div>
 
   <p class="mb-4 text-muted small">
@@ -32,8 +37,8 @@
         src="https://gravatar.com/avatar/f64fc44c03a8a7eb1d52502950879659?s=128"
     /></a>
     Façonné avec passion par <a href="#"><%= socios.auteur.nom %></a> le <%=
-    socios.dateCreation.getDate() + '/' + socios.dateCreation.getMonth() + '/' +
-    socios.dateCreation.getFullYear() %>
+    socios.dateCreation.toLocaleDateString( 'fr', { year: 'numeric', month:
+    'long', day: 'numeric' } ) %>
   </p>
 
   <div class="body-content"><%= socios.contenu %></div>
