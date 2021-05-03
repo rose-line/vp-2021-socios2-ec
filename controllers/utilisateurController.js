@@ -18,13 +18,13 @@ exports.doitEtreConnecte = function (req, res, next) {
 exports.doitEtreAuteur = async function (req, res, next) {
   // id de l'utilisateur === id de l'auteur du socios ???
 
-  // potentiellement
+  // potentiellement, si admin
   // if (req.session.admin) {
-  //   next();
+  //   return next();
   // }
 
   if (req.session.utilisateur) {
-    const socios = await trouverSocios(req.params.id);
+    const socios = await Socios.trouverSocios(req.params.id);
     if (req.session.utilisateur.id === socios.auteur.id) {
       return next();
     }
@@ -117,7 +117,6 @@ exports.accueil = function (req, res) {
     res.render(
       'visiteur',
       {
-        erreurs: req.flash('erreurs'),
         erreursInscription: req.flash('erreursInscription')
       }
     );

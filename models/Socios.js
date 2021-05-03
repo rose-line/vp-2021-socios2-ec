@@ -43,6 +43,7 @@ Socios.prototype.enregistrer = async function () {
 
   try {
     await sociosColl.insertOne(this.donnees);
+    return this.donnees._id;
   } catch {
     throw "Une erreur s'est produite. Veuillez réessayer plus tard.";
   }
@@ -63,6 +64,18 @@ Socios.prototype.mettreAJour = async function () {
         }
       }
     );
+  } catch {
+    throw "Une erreur s'est produite. Veuillez réessayer plus tard.";
+  }
+}
+
+Socios.supprimer = async function (id) {
+  if (typeof (id) !== 'string' || !ObjectID.isValid(id)) {
+    throw 'ID invalide';
+  }
+
+  try {
+    await sociosColl.deleteOne({ _id: new ObjectId(id) });
   } catch {
     throw "Une erreur s'est produite. Veuillez réessayer plus tard.";
   }

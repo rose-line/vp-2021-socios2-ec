@@ -23,5 +23,6 @@ routeur.get('/socios/:id/editer', utilisateurController.doitEtreAuteur, sociosCo
 
 routeur.post('/socios/:id/editer', utilisateurController.doitEtreAuteur, sociosController.mettreAJour);
 
+routeur.post('/socios/:id/supprimer', utilisateurController.doitEtreAuteur, sociosController.supprimer);
 
 module.exports = routeur;

@@ -8,10 +8,16 @@ exports.enregistrer = async function (req, res) {
   const socios = new Socios(req.body, req.session.utilisateur.id);
 
   try {
-    await socios.enregistrer();
-    res.send('Nouveau socios créé');
+    const idDuSociosCree = await socios.enregistrer();
+    req.flash('succes', 'Socios créé !');
+    req.session.save(() => {
+      res.redirect(`/socios/${idDuSociosCree}`);
+    });
   } catch (err) {
-    res.send(err);
+    req.flash('erreurs', err);
+    req.session.save(() => {
+      res.redirect(`/creer_socios`);
+    });
   }
 }
 
@@ -33,9 +39,7 @@ exports.afficherVueEdition = async function (req, res) {
     res.render(
       'edition-socios',
       {
-        socios: socios,
-        erreurs: req.flash('erreurs'),
-        succes: req.flash('succes')
+        socios: socios
       });
   } catch (err) {
     console.log('Erreur lors de l\'affichage du socios ', req.params.id, err);
@@ -48,15 +52,29 @@ exports.mettreAJour = async function (req, res) {
 
   try {
     await socios.mettreAJour();
-    req.flash('succes', 'Socios mis à jour !')
+    req.flash('succes', 'Socios mis à jour !');
   } catch (err) {
     console.log(err);
     req.flash('erreurs', err);
   }
   req.session.save(() => {
     res.redirect(`/socios/${req.params.id}/editer`);
-  })
+  });
 }
+
+exports.supprimer = async function (req, res) {
+  try {
+    await Socios.supprimer(req.params.id);
+    req.flash('succes', 'Socios supprimé !');
+  } catch (err) {
+    console.log(err);
+    req.flash('erreurs', err);
+  }
+  req.session.save(() => {
+    res.redirect(`/profil/${req.session.utilisateur.nom}`);
+  });
+}
+
 
 function clientEstAuteur(utilisateurConnecte, socios) {
   if (!utilisateurConnecte) {
