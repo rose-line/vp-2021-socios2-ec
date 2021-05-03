@@ -1,5 +1,6 @@
 const Utilisateur = require('../models/Utilisateur');
 const Socios = require('../models/Socios');
+const { trouverSocios } = require('../models/Socios');
 
 exports.doitEtreConnecte = function (req, res, next) {
   if (req.session.utilisateur) {
@@ -12,6 +13,27 @@ exports.doitEtreConnecte = function (req, res, next) {
       res.redirect('/');
     });
   }
+}
+
+exports.doitEtreAuteur = async function (req, res, next) {
+  // id de l'utilisateur === id de l'auteur du socios ???
+
+  // potentiellement
+  // if (req.session.admin) {
+  //   next();
+  // }
+
+  if (req.session.utilisateur) {
+    const socios = await trouverSocios(req.params.id);
+    if (req.session.utilisateur.id === socios.auteur.id) {
+      return next();
+    }
+  }
+
+  req.flash('erreurs', 'Vous ne pouvez pas effectuer cette action.');
+  req.session.save(() => {
+    res.redirect('/');
+  });
 }
 
 exports.doitExister = async function (req, res, next) {

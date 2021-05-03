@@ -19,9 +19,9 @@ routeur.get('/profil/:nom', utilisateurController.doitExister, utilisateurContro
 
 routeur.get('/socios/:id', sociosController.afficherVueSocios);
 
-routeur.get('/socios/:id/editer', utilisateurController.doitEtreLAuteur, sociosController.afficherVueEdition);
+routeur.get('/socios/:id/editer', utilisateurController.doitEtreAuteur, sociosController.afficherVueEdition);
 
-routeur.post('/socios/:id/editer', utilisateurController.doitEtreLAuteur, sociosController.mettreAJour);
+routeur.post('/socios/:id/editer', utilisateurController.doitEtreAuteur, sociosController.mettreAJour);
 
 
 module.exports = routeur;

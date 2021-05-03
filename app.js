@@ -28,6 +28,8 @@ serveur.use(sessionOptions);
 // Pour injecter les données de session
 serveur.use((req, res, next) => {
   res.locals.utilisateur = req.session.utilisateur;
+  res.locals.erreurs = req.flash('erreurs');
+  res.locals.succes = req.flash('succes');
   next();
 });
 

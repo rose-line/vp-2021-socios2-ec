@@ -1,10 +1,13 @@
 <%- include('partials/header') %>
 
 <div class="container py-md-5 container--narrow">
+  <% erreurs.forEach(erreur => { %>
+  <div class="alert alert-danger text-center"><%= erreur %></div>
+  <% }) %>
+
   <div class="text-center">
     <h2>
-      Salut <strong><%= utilisateur.nom %></strong>, votre muros est
-      vide.
+      Salut <strong><%= utilisateur.nom %></strong>, votre muros est vide.
     </h2>
     <p class="lead text-muted">
       Votre muros affiche les derniers socios des gus que vous suivez. Vous
